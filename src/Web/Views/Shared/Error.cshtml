@@ -1,0 +1,16 @@
+@using System.Collections
+@using Microsoft.AspNetCore.Mvc.Localization
+@model Web.Models.VMs.ErrorVM
+@inject IViewLocalizer _localizer
+
+@{
+    ViewBag.Title = "Error";
+    var e = Model.Exception;
+}
+
+<h2 class="text-danger">@_localizer["Error occured"]</h2>
+<h4>@e.Message</h4>
+@foreach (DictionaryEntry obj in e.Data)
+{
+    <p>@obj.Key @obj.Value</p>
+}

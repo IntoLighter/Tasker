@@ -1,0 +1,35 @@
+@model Web.Models.VMs.AuthenticationVM
+@inject IViewLocalizer _localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@{
+    ViewBag.Title = "Log in";
+}
+
+<div class="card w-50 container justify-content-center">
+    <div class="card-body">
+        <h5 class="text-center mb-3">@_localizer["Log in"]</h5>
+        <form asp-controller="Authentication" id="authentication-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating mb-4 row">
+                <input asp-for="Email" class="form-control" placeholder="Email" autocomplete="email">
+                <label asp-for="Email">@_localizer["Email"]</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-4 row">
+                <input asp-for="Password" class="form-control" placeholder="Password">
+                <label asp-for="Password">@_localizer["Password"]</label>
+                <i class="btn fa-solid fa-eye" id="password-toggle"></i>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="row justify-content-between">
+                <button type="submit" class="col-sm-5 btn btn-primary" asp-action="Register">@_localizer["Register"]</button>
+                <button type="submit" class="col-sm-5 btn btn-primary" asp-action="LogIn">@_localizer["Log in"]</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/authentication.js"></script>
+}

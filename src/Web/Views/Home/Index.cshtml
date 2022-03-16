@@ -1,0 +1,92 @@
+@inject IViewLocalizer _localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Web.Models.VMs
+@model List<Web.Models.VMs.TaskForestNodeVM>
+
+@{
+    ViewBag.Title = "Home";
+    var task = new TaskVM();
+}
+
+<section class="row justify-content-evenly">
+    <article class="task-tree col-2">
+        <partial name="_TaskForestLevel" model="Model"/>
+    </article>
+    <aside class="col-10">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="text-center">@_localizer["Task"]</h5>
+                <form method="post" class="card-form" id="task-form" autocomplete="on">
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div class="mb-lg-3 row justify-content-evenly">
+                        <div class="form-floating col-lg-5">
+                            <input asp-for="@task.Name" class="form-control" placeholder="Name">
+                            <label asp-for="@task.Name">@_localizer["Name"]</label>
+                            <span asp-validation-for="@task.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating col-lg-5">
+                            <textarea asp-for="@task.Description" class="form-control" placeholder="Description"></textarea>
+                            <label asp-for="@task.Description">@_localizer["Description"]</label>
+                            <span asp-validation-for="@task.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-lg-3 row justify-content-evenly">
+                        <div class="form-floating col-lg-5">
+                            <input asp-for="@task.ListOfExecutors" class="form-control" placeholder="ListOfExecutors">
+                            <label asp-for="@task.ListOfExecutors">@_localizer["List of executors"]</label>
+                            <span asp-validation-for="@task.ListOfExecutors" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating col-lg-5">
+                            <select asp-for="@task.Status" class="form-select">
+                                <option value="Assigned" selected>@_localizer["Assigned"]</option>
+                                <option value="Executing">@_localizer["Executing"]</option>
+                                <option value="Paused">@_localizer["Paused"]</option>
+                                <option value="Completed">@_localizer["Completed"]</option>
+                            </select>
+                            <label asp-for="@task.Status">@_localizer["Task status"]</label>
+                            <span asp-validation-for="@task.Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-lg-3 row justify-content-evenly">
+                        <div class="form-floating col-lg-5">
+                            <input asp-for="@task.DateOfRegistration" class="form-control" placeholder="DateOfRegistration">
+                            <label asp-for="@task.DateOfRegistration">@_localizer["Date of registration"]</label>
+                            <span asp-validation-for="@task.DateOfRegistration" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating col-lg-5">
+                            <input asp-for="@task.DateOfComplete" class="form-control" placeholder="DateOfComplete">
+                            <label asp-for="@task.DateOfComplete">@_localizer["Date of complete"]</label>
+                            <span asp-validation-for="@task.DateOfComplete" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-lg-3 row justify-content-evenly">
+                        <div class="form-floating col-lg-5">
+                            <input asp-for="@task.PlannedComplexity" class="form-control" placeholder="PlannedComplexity">
+                            <label asp-for="@task.PlannedComplexity">@_localizer["Planned complexity"]</label>
+                            <span asp-validation-for="@task.PlannedComplexity" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating col-lg-5">
+                            <input asp-for="@task.ActualExecutionTime" class="form-control" placeholder="ActualExecutionTime">
+                            <label asp-for="@task.ActualExecutionTime">@_localizer["Actual execution time"]</label>
+                            <span asp-validation-for="@task.ActualExecutionTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-lg justify-content-evenly">
+                        <div class="btn-group-vertical col-lg-2">
+                            <button id="CreateTask" class="btn btn-success" type="submit" asp-action="CreateTask">@_localizer["Create task"]</button>
+                            <button id="CreateSubtask" class="btn btn-success" type="submit" asp-action="CreateSubtask">@_localizer["Create subtask"]</button>
+                        </div>
+                        <button id="SaveTask" class="btn btn-warning col-lg-2" type="submit" asp-action="SaveTask">@_localizer["Save task"]</button>
+                        <button id="DeleteTask" class="btn btn-danger col-lg-2" type="submit" asp-action="Delete" form="delete-task-form">@_localizer["Delete task"]</button>
+                        <button id="ClearData" class="btn btn-info col-lg-2" type="button">@_localizer["Clear data"]</button>
+                    </div>
+                </form>
+                <form method="post" id="delete-task-form"></form>
+            </div>
+        </div>
+    </aside>
+</section>
+
+@section Scripts {
+    <script src="~/js/home.js"></script>
+}

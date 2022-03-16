@@ -1,0 +1,94 @@
+@header-color: #e3f2fd;
+
+.navbar {
+  background-color: @header-color;
+
+  .navbar-nav {
+    flex-grow: 1;
+  }
+}
+
+.backdrop {
+  background: radial-gradient(#cf524a, #d44e46);
+
+  & > div {
+    background: radial-gradient(#e3b709, #f5c005);
+  }
+}
+
+.task-node-focused {
+  background-color: #0d6efd;
+}
+
+.task-node {
+  width: fit-content;
+  white-space: nowrap;
+  
+  & > .toggle-node-arrow {
+    display: inline-block;
+    width: 15px;
+  }
+
+  .task-node-name {
+    background-color: transparent;
+  }
+}
+
+.mb() {
+  margin-bottom: 1rem;
+}
+
+.no-mb() {
+  margin-bottom: 0;
+}
+
+#task-form {
+  label {
+    margin-left: .7rem;
+  }
+
+  @media (max-width: 992px) {
+    .btn-group-vertical {
+      padding: 0;
+    }
+
+    .form-floating {
+      .mb;
+    }
+
+    button {
+      .mb;
+      border-radius: .25rem;
+    }
+    
+    #ClearData {
+      .no-mb;
+    }
+  }
+
+  .field-validation-error span {
+    margin-left: 0.5rem;
+  }
+}
+
+#authentication-form {
+  @media(max-width: 576px) {
+    button {
+      .mb;
+      &:last-child {
+        .no-mb;
+      }
+    }
+  }
+}
+
+#Password {
+  padding-right: 50px;
+}
+
+#password-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  width: auto;
+}

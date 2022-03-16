@@ -1,0 +1,24 @@
+@model List<Web.Models.VMs.TaskForestNodeVM>
+
+@foreach (var task in Model)
+{
+    <div task-id="@task.Id" class="task-node">
+        <span class="toggle-node-arrow">
+            @if (task.ChildrenTasks.Count != 0)
+            {
+                <i class="fa-solid fa-arrow-down"></i>
+            }
+        </span>
+        <button type="button"
+                class="border-0 p-2 rounded task-node-name">
+            @task.Name
+        </button>
+    </div>
+
+    if (task.ChildrenTasks != null && task.ChildrenTasks.Count != 0)
+    {
+        <div class="ms-3">
+            <partial name="_TaskForestLevel" model="task.ChildrenTasks"/>
+        </div>
+    }
+}
