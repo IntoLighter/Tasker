@@ -1,65 +1,83 @@
 .navbar {
-  background-color: #e3f2fd;
+    background-color: #e3f2fd;
 }
+
 .navbar .navbar-nav {
-  flex-grow: 1;
+    flex-grow: 1;
 }
+
 .backdrop {
-  background: radial-gradient(#cf524a, #d44e46);
+    background: radial-gradient(#cf524a, #d44e46);
 }
+
 .backdrop > div {
-  background: radial-gradient(#e3b709, #f5c005);
+    background: radial-gradient(#e3b709, #f5c005);
 }
+
 .task-node-focused {
-  background-color: #0d6efd;
+    background-color: #0d6efd;
 }
+
 .task-node {
-  width: fit-content;
-  white-space: nowrap;
+    white-space: nowrap;
+    width: fit-content;
 }
+
 .task-node > .toggle-node-arrow {
-  display: inline-block;
-  width: 15px;
+    display: inline-block;
+    width: 15px;
 }
+
 .task-node .task-node-name {
-  background-color: transparent;
+    background-color: transparent;
 }
+
 #task-form label {
-  margin-left: 0.7rem;
+    margin-left: 0.7rem;
 }
+
 @media (max-width: 992px) {
-  #task-form .btn-group-vertical {
-    padding: 0;
-  }
-  #task-form .form-floating {
-    margin-bottom: 1rem;
-  }
-  #task-form button {
-    margin-bottom: 1rem;
-    border-radius: 0.25rem;
-  }
-  #task-form #ClearData {
-    margin-bottom: 0;
-  }
+    #task-form .btn-group-vertical {
+        padding: 0;
+    }
+
+    #task-form .form-floating {
+        margin-bottom: 1rem;
+    }
+
+    #task-form button {
+        border-radius: 0.25rem;
+        margin-bottom: 1rem;
+    }
+
+    #task-form #ClearData {
+        margin-bottom: 0;
+    }
 }
+
 #task-form .field-validation-error span {
-  margin-left: 0.5rem;
+    margin-left: 0.5rem;
 }
+
 @media (max-width: 576px) {
-  #authentication-form button {
-    margin-bottom: 1rem;
-  }
-  #authentication-form button:last-child {
-    margin-bottom: 0;
-  }
+    #authentication-form button {
+        margin-bottom: 1rem;
+    }
+
+    #authentication-form button:last-child {
+        margin-bottom: 0;
+    }
 }
+
 #Password {
-  padding-right: 50px;
+    padding-right: 50px;
 }
+
 #password-toggle {
-  position: absolute;
-  top: 1rem;
-  right: 0;
-  width: auto;
+    position: absolute;
+    right: 0;
+    top: 1rem;
+    width: auto;
 }
+
 /*# sourceMappingURL=site.css.map */

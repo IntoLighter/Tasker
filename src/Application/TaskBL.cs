@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -89,7 +88,7 @@ namespace Application
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
             _logger.LogInformation(LogEvents.DeleteTask,
-                "Deleted task {TaskId} for user {UserId}", GetUserId(user));
+                "Deleted task {TaskId} for user {UserId}", id, GetUserId(user));
         }
 
         public async Task UpdateTaskAsync(TaskEntity updatedTask, ClaimsPrincipal user)
@@ -115,7 +114,7 @@ namespace Application
                             {
                                 _logger.LogError(LogEvents.TaskNotLeafException,
                                     "User {UserId} tried to update status for task {TaskId} to completed and " +
-                                    "and the task {ChildId} have status {ChildStatus}", 
+                                    "and the task {ChildId} have status {ChildStatus}",
                                     userId, updatedTask.Id, node.Id, node.Status);
                                 throw new TaskInvalidStatusException(
                                     "Main and children tasks should have status executing or completed to complete the main task");
@@ -133,7 +132,7 @@ namespace Application
             originalTask.DateOfRegistration = updatedTask.DateOfRegistration;
             originalTask.DateOfComplete = updatedTask.DateOfComplete;
             await _context.SaveChangesAsync();
-            
+
             _logger.LogInformation(LogEvents.UpdateTask,
                 "Updated task {TaskId} for user {User}", updatedTask.Id, GetUserId(user));
         }

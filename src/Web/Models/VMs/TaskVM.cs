@@ -21,8 +21,10 @@ namespace Web.Models.VMs
         public DateTime DateOfComplete { get; set; }
 
         public TaskStatus Status { get; set; }
+
         [Required(ErrorMessage = "Planned complexity required")]
         public int PlannedComplexity { get; set; }
+
         [Required(ErrorMessage = "Actual execution time required")]
         public int ActualExecutionTime { get; set; }
     }

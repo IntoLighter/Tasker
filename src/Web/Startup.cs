@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Web
@@ -34,7 +33,7 @@ namespace Web
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization()
                 .AddRazorRuntimeCompilation();
-            
+
             services.AddWebOptimizer();
 
             services.Configure<RequestLocalizationOptions>(options =>
@@ -84,7 +83,7 @@ namespace Web
                     .RequireAuthenticatedUser()
                     .Build();
             });
-            
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Authentication";

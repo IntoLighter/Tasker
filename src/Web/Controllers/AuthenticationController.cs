@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Application;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models.VMs;
 

@@ -6,9 +6,7 @@ using Application.Exceptions;
 using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Persistence.EntityFramework;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -34,7 +32,8 @@ namespace Application.UnitTests
         private static IDbContext GetDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(new StackFrame(1, true).GetMethod()?.Name ?? "db") // Имя вызывающей функции
+                // Имя вызывающей функции
+                .UseInMemoryDatabase(new StackFrame(1, true).GetMethod()?.Name ?? "db")
                 .Options;
             return new AppDbContext(options);
         }
@@ -218,7 +217,8 @@ namespace Application.UnitTests
             context.Tasks.Add(rootTask);
             context.SaveChangesAsync();
 
-            bl.UpdateTaskAsync(new TaskEntity { Id = rootTask.Id, Status = TaskStatus.Completed }, GetClaimsPrincipal());
+            bl.UpdateTaskAsync(new TaskEntity { Id = rootTask.Id, Status = TaskStatus.Completed },
+                GetClaimsPrincipal());
 
             Assert.Equal(TaskStatus.Completed, rootTask.Status);
             Assert.Equal(TaskStatus.Completed, subtask.Status);
@@ -249,9 +249,11 @@ namespace Application.UnitTests
             await context.SaveChangesAsync();
 
             await Assert.ThrowsAsync<TaskInvalidStatusException>(() =>
-                bl.UpdateTaskAsync(new TaskEntity { Id = rootTask.Id, Status = TaskStatus.Completed }, GetClaimsPrincipal()));
+                bl.UpdateTaskAsync(new TaskEntity { Id = rootTask.Id, Status = TaskStatus.Completed },
+                    GetClaimsPrincipal()));
             await Assert.ThrowsAsync<TaskInvalidStatusException>(() =>
-                bl.UpdateTaskAsync(new TaskEntity { Id = subtask.Id, Status = TaskStatus.Completed }, GetClaimsPrincipal()));
+                bl.UpdateTaskAsync(new TaskEntity { Id = subtask.Id, Status = TaskStatus.Completed },
+                    GetClaimsPrincipal()));
         }
 
         [Fact]

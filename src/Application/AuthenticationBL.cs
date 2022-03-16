@@ -14,9 +14,9 @@ namespace Application
     public class AuthenticationBL
     {
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<AuthenticationBL> _logger;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ILogger<AuthenticationBL> _logger;
 
         public AuthenticationBL(UserManager<IdentityUser> userManager,
             IEmailSender emailSender, SignInManager<IdentityUser> signInManager, ILogger<AuthenticationBL> logger)
@@ -122,10 +122,7 @@ namespace Application
         {
             var errors = result.Errors.ToArray();
             var e = new AuthenticationException(msg);
-            for (var i = 0; i < errors.Length; i++)
-            {
-                e.Data.Add(i + 1, errors[i].Description);
-            }
+            for (var i = 0; i < errors.Length; i++) e.Data.Add(i + 1, errors[i].Description);
 
             _logger.LogError(LogEvents.AuthenticationException, msg + " for user {UserId}", userId);
             throw e;
