@@ -38,6 +38,7 @@ namespace Web.Controllers
                 "PlannedComplexity", "ActualExecutionTime")]
             TaskEntity task)
         {
+            if (!ModelState.IsValid) return View("Index");
             await _taskBL.AddTaskAsync(task, User);
             return RedirectToAction(nameof(Index));
         }
@@ -50,6 +51,7 @@ namespace Web.Controllers
                 "PlannedComplexity", "ActualExecutionTime")]
             TaskEntity task, long parentId)
         {
+            if (!ModelState.IsValid) return View("Index");
             await _taskBL.AddSubtaskAsync(task, parentId, User);
             return RedirectToAction(nameof(Index));
         }
@@ -62,6 +64,7 @@ namespace Web.Controllers
                 "DateOfRegistration", "DateOfComplete")]
             TaskEntity task)
         {
+            if (!ModelState.IsValid) return View("Index");
             await _taskBL.UpdateTaskAsync(task, User);
             return RedirectToAction(nameof(Index));
         }
