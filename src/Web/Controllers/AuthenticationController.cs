@@ -25,6 +25,7 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("Email", "Password")] AuthenticationVM vm)
         {
+            if (!ModelState.IsValid) return View("Index", vm);
             await _authenticationBL.RegisterAsync(vm.Email, vm.Password);
             return RedirectToAction("Index", "Home");
         }
@@ -33,6 +34,7 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn([Bind("Email", "Password")] AuthenticationVM vm)
         {
+            if (!ModelState.IsValid) return View("Index", vm);
             await _authenticationBL.LoginAsync(vm.Email, vm.Password, User);
             return RedirectToAction("Index", "Home");
         }
