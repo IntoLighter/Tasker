@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Application.Common;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -22,6 +21,12 @@ namespace Infrastructure.Services
 
         public async Task SendEmailAsync(string email, string subject, string text)
         {
+            if (_options.SendGridKey == null || _options.Email == null)
+            {
+                _logger.LogError("Configuration for sending mails is not found");
+                return;
+            }
+
             var client = new SendGridClient(_options.SendGridKey);
             var msg = new SendGridMessage
             {

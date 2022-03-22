@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Application
 {
@@ -21,17 +20,15 @@ namespace Application
         private readonly ILogger<AuthenticationBL> _logger;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly AuthMessageSenderOptions _options;
 
         public AuthenticationBL(UserManager<IdentityUser> userManager,
-            IEmailSender emailSender, SignInManager<IdentityUser> signInManager, ILogger<AuthenticationBL> logger,
-            IOptions<AuthMessageSenderOptions> options)
+            IEmailSender emailSender, SignInManager<IdentityUser> signInManager, ILogger<AuthenticationBL> logger
+        )
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _logger = logger;
-            _options = options.Value;
         }
 
         public async Task RegisterAsync(string email, string password, HttpRequest request)
@@ -43,24 +40,21 @@ namespace Application
                 _logger.LogInformation(LogEvents.Register,
                     "User {UserId} account created", user.Id);
 
-                if (_options.SendGridKey != null && _options.Email != null)
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = new UriBuilder
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = new UriBuilder
-                    {
-                        Scheme = request.Scheme,
-                        Host = request.Host.Host,
-                        Path = "/Authentication/ConfirmEmail",
-                        Query = $"code={code}&userId={user.Id}"
-                    };
-                    if (request.Host.Port.HasValue)
-                        callbackUrl.Port = request.Host.Port.Value;
-                    
-                    await _emailSender.SendEmailAsync(email, "Confirm your email",
-                        "Please confirm your account by " +
-                        $"<a href='{HtmlEncoder.Default.Encode(callbackUrl.ToString())}'>following link</a>.");
-                }
+                    Scheme = request.Scheme,
+                    Host = request.Host.Host,
+                    Path = "/Authentication/ConfirmEmail",
+                    Query = $"code={code}&userId={user.Id}"
+                };
+                if (request.Host.Port.HasValue)
+                    callbackUrl.Port = request.Host.Port.Value;
+
+                await _emailSender.SendEmailAsync(email, "Confirm your email",
+                    "Please confirm your account by " +
+                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl.ToString())}'>following link</a>.");
 
                 await _signInManager.SignInAsync(user, false);
                 return;
