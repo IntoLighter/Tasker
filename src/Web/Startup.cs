@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using Application;
 using Application.Common;
@@ -64,7 +65,6 @@ namespace Web
 
             services.AddDefaultIdentity<IdentityUser>(options =>
                 {
-                    // To easier test
                     options.Password.RequireUppercase = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireDigit = false;

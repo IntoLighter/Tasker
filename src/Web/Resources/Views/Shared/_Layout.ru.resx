@@ -15,10 +15,10 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
-    <data name="Home" xml:space="preserve">
-        <value>Главная</value>
-    </data>
     <data name="Log out" xml:space="preserve">
         <value>Выйти</value>
+    </data>
+    <data name="Log in" xml:space="preserve">
+        <value>Войти</value>
     </data>
 </root>
