@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Application.Common;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,39 +12,31 @@ namespace Infrastructure.Services
     public class EmailSender : IEmailSender
     {
         private readonly ILogger<EmailSender> _logger;
+        private readonly AuthMessageSenderOptions _options;
 
         public EmailSender(ILogger<EmailSender> logger, IOptions<AuthMessageSenderOptions> optionsAccessor)
         {
             _logger = logger;
-            Options = optionsAccessor.Value;
+            _options = optionsAccessor.Value;
         }
 
-        public AuthMessageSenderOptions Options { get; } // Should be filled automatically
-
-        public async Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string text)
         {
-            if (string.IsNullOrEmpty(Options.SendGridKey)) throw new Exception("Null SendGridKey");
-
-            await Execute(Options.SendGridKey, subject, message, email);
-        }
-
-        public async Task Execute(string apiKey, string subject, string messageText, string email)
-        {
-            var client = new SendGridClient(apiKey);
-            var message = new SendGridMessage
+            var client = new SendGridClient(_options.SendGridKey);
+            var msg = new SendGridMessage
             {
-                From = new EmailAddress("intolighter.net@gmail.com"),
+                From = new EmailAddress(_options.Email),
                 Subject = subject,
-                PlainTextContent = messageText,
-                HtmlContent = messageText
+                PlainTextContent = text,
+                HtmlContent = text
             };
 
-            message.AddTo(new EmailAddress(email));
-            message.SetClickTracking(false, false);
-            var response = await client.SendEmailAsync(message);
-            _logger.LogInformation(response.IsSuccessStatusCode
-                ? $"Email to {email} queued successfully!"
-                : $"Failure Email to {email}");
+            msg.AddTo(new EmailAddress(email));
+            msg.SetClickTracking(false, false);
+            var response = await client.SendEmailAsync(msg);
+            _logger.LogInformation(LogEvents.SendingConfirmationEmail, response.IsSuccessStatusCode
+                ? $"Sent email to {email}"
+                : $"Failed to send email to {email}");
         }
     }
 }

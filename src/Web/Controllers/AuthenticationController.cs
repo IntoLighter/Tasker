@@ -26,7 +26,7 @@ namespace Web.Controllers
         public async Task<IActionResult> Register([Bind("Email", "Password")] AuthenticationVM vm)
         {
             if (!ModelState.IsValid) return View("Index", vm);
-            await _authenticationBL.RegisterAsync(vm.Email, vm.Password);
+            await _authenticationBL.RegisterAsync(vm.Email, vm.Password, HttpContext.Request);
             return RedirectToAction("Index", "Home");
         }
 
@@ -47,8 +47,8 @@ namespace Web.Controllers
 
         public async Task<IActionResult> ConfirmEmail(string code, string userId)
         {
-            await _authenticationBL.ConfirmEmailAsync(userId, code);
-            return User.Identity.IsAuthenticated ? RedirectToAction("Index", "Home") : RedirectToAction("Index");
+            var email = await _authenticationBL.ConfirmEmailAsync(userId, code);
+            return View(model: email);
         }
     }
 }

@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace Application.Common
 {
     public static class LogEvents
@@ -12,6 +14,8 @@ namespace Application.Common
         public const int Register = 1101;
         public const int LogIn = 1102;
         public const int LogOut = 1103;
+        public const int SendingConfirmationEmail = 1104;
+        public const int ConfirmedEmail = 1105;
 
         public const int AuthenticationException = 2001;
         public const int TaskInvalidStatusException = 2101;

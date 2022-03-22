@@ -57,7 +57,6 @@ namespace Web
             services.AddScoped<IDbContext, AppDbContext>();
 
             services
-                .AddScoped<IEmailSender, EmailSender>()
                 .AddScoped<TaskBL>()
                 .AddScoped<AuthenticationBL>();
 

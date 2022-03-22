@@ -1,0 +1,9 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@model string
+@inject IViewLocalizer _localizer
+
+@{
+    ViewBag.Title = "Confirm email";
+}
+
+<h4>@Model @_localizer["Success"]</h4>

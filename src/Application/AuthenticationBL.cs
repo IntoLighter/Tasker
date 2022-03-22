@@ -1,13 +1,17 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Application.Common;
 using Application.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Application
 {
@@ -17,17 +21,20 @@ namespace Application
         private readonly ILogger<AuthenticationBL> _logger;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly AuthMessageSenderOptions _options;
 
         public AuthenticationBL(UserManager<IdentityUser> userManager,
-            IEmailSender emailSender, SignInManager<IdentityUser> signInManager, ILogger<AuthenticationBL> logger)
+            IEmailSender emailSender, SignInManager<IdentityUser> signInManager, ILogger<AuthenticationBL> logger,
+            IOptions<AuthMessageSenderOptions> options)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _logger = logger;
+            _options = options.Value;
         }
 
-        public async Task RegisterAsync(string email, string password)
+        public async Task RegisterAsync(string email, string password, HttpRequest request)
         {
             var user = new IdentityUser { UserName = email, Email = email };
             var result = await _userManager.CreateAsync(user, password);
@@ -36,25 +43,24 @@ namespace Application
                 _logger.LogInformation(LogEvents.Register,
                     "User {UserId} account created", user.Id);
 
-                #region Подтверждение по почте через SendGrid (Необходим API key)
-
-                // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                // var callbackUrl = new UriBuilder
-                // {
-                //     Scheme = request.Scheme,
-                //     Host = request.Host.Host,
-                //     Path = "/Authentication/ConfirmEmail",
-                //     Query = $"code={code}&userId={user.Id}"
-                // };
-                // if (request.Host.Port.HasValue)
-                //     callbackUrl.Port = request.Host.Port.Value;
-                //
-                // await _emailSender.SendEmailAsync(email, "Confirm your email",
-                //     $"Please confirm your account by " +
-                //     $"<a href='{HtmlEncoder.Default.Encode(callbackUrl.ToString())}'>clicking here</a>.");
-
-                #endregion
+                if (_options.SendGridKey != null && _options.Email != null)
+                {
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = new UriBuilder
+                    {
+                        Scheme = request.Scheme,
+                        Host = request.Host.Host,
+                        Path = "/Authentication/ConfirmEmail",
+                        Query = $"code={code}&userId={user.Id}"
+                    };
+                    if (request.Host.Port.HasValue)
+                        callbackUrl.Port = request.Host.Port.Value;
+                    
+                    await _emailSender.SendEmailAsync(email, "Confirm your email",
+                        "Please confirm your account by " +
+                        $"<a href='{HtmlEncoder.Default.Encode(callbackUrl.ToString())}'>following link</a>.");
+                }
 
                 await _signInManager.SignInAsync(user, false);
                 return;
@@ -84,7 +90,7 @@ namespace Application
 
             _logger.LogError(LogEvents.AuthenticationException,
                 "Invalid login attempt for email {Email}", email);
-            throw new AuthenticationException("Invalid login attempt");
+            throw new AuthenticationException("There is no user registered with these credentials");
         }
 
         public async Task LogoutAsync(ClaimsPrincipal user)
@@ -94,7 +100,7 @@ namespace Application
                 user.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
 
-        public async Task ConfirmEmailAsync(string userId, string code)
+        public async Task<string> ConfirmEmailAsync(string userId, string code)
         {
             if (userId == null && code == null)
             {
@@ -113,8 +119,11 @@ namespace Application
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
+            _logger.LogInformation(LogEvents.ConfirmedEmail, "{UserId} confirmed email", user.Id);
             if (!result.Succeeded)
                 ThrowAuthenticationExceptionFromIdentityResultErrors("Invalid confirm email attempt", result, userId);
+
+            return user.Email;
         }
 
         private void ThrowAuthenticationExceptionFromIdentityResultErrors(string msg, IdentityResult result,

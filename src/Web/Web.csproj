@@ -58,6 +58,10 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>AuthenticationVM.en.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Views\Authentication\ConfirmEmail.en.resx">
+          <Generator>ResXFileCodeGenerator</Generator>
+          <LastGenOutput>ConfirmEmail.en.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
         <TypeScriptCompile Include="wwwroot\js\authentication.ts" />

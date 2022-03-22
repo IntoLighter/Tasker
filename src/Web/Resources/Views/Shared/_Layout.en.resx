@@ -30,4 +30,7 @@
     <data name="Log in" xml:space="preserve">
         <value>Log in</value>
     </data>
+    <data name="Confirm email" xml:space="preserve">
+        <value>Confirm email</value>
+    </data>
 </root>

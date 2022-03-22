@@ -21,4 +21,7 @@
     <data name="Log in" xml:space="preserve">
         <value>Войти</value>
     </data>
+    <data name="Confirm email" xml:space="preserve">
+        <value>Подтвержение почты</value>
+    </data>
 </root>
