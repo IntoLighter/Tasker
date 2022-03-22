@@ -50,7 +50,8 @@ namespace Web
             });
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection") +
+                                     $"Password={Configuration["DB_PASSWORD"]};"));
 
             services.AddScoped<IDbContext, AppDbContext>();
 
