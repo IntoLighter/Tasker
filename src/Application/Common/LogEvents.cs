@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace Application.Common
 {
     public static class LogEvents
