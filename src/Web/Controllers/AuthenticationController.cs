@@ -26,7 +26,7 @@ namespace Web.Controllers
         public async Task<IActionResult> Register([Bind("Email", "Password")] AuthenticationVM vm)
         {
             if (!ModelState.IsValid) return View("Index", vm);
-            await _authenticationBL.RegisterAsync(vm.Email, vm.Password, HttpContext.Request);
+            await _authenticationBL.RegisterAsync(vm.Email, vm.Password, HttpContext?.Request);
             return RedirectToAction("Index", "Home");
         }
 
