@@ -1,18 +1,12 @@
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using AutoMapper;
-using Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Web.AutoMapper;
 using Web.Controllers;
 using Web.Models.VMs;
 using Xunit;
 
-namespace Application.UnitTests
+namespace Web.UnitTests
 {
     public class AuthenticationControllerTests
     {

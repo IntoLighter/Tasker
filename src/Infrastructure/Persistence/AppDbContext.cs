@@ -1,9 +1,8 @@
-using Application.Common;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence.EntityFramework
+namespace Infrastructure.Persistence
 {
     public class AppDbContext : IdentityDbContext, IDbContext
     {

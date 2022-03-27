@@ -1,8 +1,11 @@
 using System.Globalization;
+using System.Reflection;
+using Application;
 using Application.Common;
+using Application.Implementations;
 using Application.Interfaces;
+using Infrastructure;
 using Infrastructure.Persistence;
-using Infrastructure.Persistence.EntityFramework;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +32,9 @@ namespace Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplication();
+            services.AddInfrastructure(Configuration);
+            
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
                 .AddViewLocalization()
@@ -50,45 +56,7 @@ namespace Web
                 options.SupportedUICultures = supportedCultures;
             });
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection") +
-                                     $"Password={Configuration["DbPassword"]};"));
-
-            services.AddScoped<IDbContext, AppDbContext>();
-
-            services
-                .AddScoped<ITaskBL>()
-                .AddScoped<IAuthenticationBL>();
-
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddDefaultIdentity<IdentityUser>(options =>
-                {
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequiredLength = 1;
-
-                    options.User.RequireUniqueEmail = true;
-                })
-                .AddEntityFrameworkStores<AppDbContext>();
-
-            services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
-
-            services.AddAuthorization(options =>
-            {
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-            });
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Authentication";
-                options.SlidingExpiration = true;
-            });
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
