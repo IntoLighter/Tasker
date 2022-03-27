@@ -1,6 +1,6 @@
 using System.Globalization;
-using Application;
 using Application.Common;
+using Application.Interfaces;
 using Infrastructure.Persistence.EntityFramework;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -56,8 +56,8 @@ namespace Web
             services.AddScoped<IDbContext, AppDbContext>();
 
             services
-                .AddScoped<TaskBL>()
-                .AddScoped<AuthenticationBL>();
+                .AddScoped<ITaskBL>()
+                .AddScoped<IAuthenticationBL>();
 
             services.AddAutoMapper(typeof(Startup));
 

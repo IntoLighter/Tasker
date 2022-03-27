@@ -6,15 +6,16 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Application.Common;
 using Application.Exceptions;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-namespace Application
+namespace Application.Implementations
 {
-    public class AuthenticationBL
+    public class AuthenticationBL : IAuthenticationBL
     {
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AuthenticationBL> _logger;
@@ -63,7 +64,7 @@ namespace Application
             ThrowAuthenticationExceptionFromIdentityResultErrors("Invalid registration attempt", result, user.Id);
         }
 
-        public async Task LoginAsync(string email, string password, ClaimsPrincipal user)
+        public async Task LogInAsync(string email, string password, ClaimsPrincipal user)
         {
             if (user.Identity.IsAuthenticated)
             {

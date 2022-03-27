@@ -1,5 +1,5 @@
 #nullable enable
-namespace Application.Common
+namespace Infrastructure.Services
 {
     public class AuthMessageSenderOptions
     {

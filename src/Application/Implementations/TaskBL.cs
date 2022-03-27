@@ -5,14 +5,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Common;
 using Application.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaskStatus = Domain.Enums.TaskStatus;
 
-namespace Application
+namespace Application.Implementations
 {
-    public class TaskBL
+    public class TaskBL : ITaskBL
     {
         private readonly IDbContext _context;
         private readonly ILogger<TaskBL> _logger;

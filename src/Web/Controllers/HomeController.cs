@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application;
+using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -17,9 +17,9 @@ namespace Web.Controllers
     public class HomeController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly TaskBL _taskBL;
+        private readonly ITaskBL _taskBL;
 
-        public HomeController(TaskBL taskBL, IMapper mapper)
+        public HomeController(ITaskBL taskBL, IMapper mapper)
         {
             _taskBL = taskBL;
             _mapper = mapper;

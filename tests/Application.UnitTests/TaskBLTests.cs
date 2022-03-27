@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Application.Common;
 using Application.Exceptions;
+using Application.Implementations;
 using Domain.Entities;
-using Domain.Enums;
 using Infrastructure.Persistence.EntityFramework;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
+using TaskStatus = Domain.Enums.TaskStatus;
 
 namespace Application.UnitTests
 {
@@ -57,37 +59,37 @@ namespace Application.UnitTests
         }
 
         [Fact]
-        public void GetTaskForestAsync_TwoTreesWithDifferentUsers_ReturnsSingleTree()
+        public async Task GetTaskForestAsync_TwoTreesWithDifferentUsers_ReturnsSingleTree()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
 
             context.Tasks.Add(GetTaskWithDefaultUser());
             context.Tasks.Add(new TaskEntity { User = new IdentityUser { Id = "2" } });
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            var result = bl.GetTaskForestAsync(GetClaimsPrincipal()).Result;
+            var result = await bl.GetTaskForestAsync(GetClaimsPrincipal());
 
             Assert.Single(result);
         }
 
         [Fact]
-        public void GetTaskForestAsync_TwoTrees_ReturnsTwoTrees()
+        public async Task GetTaskForestAsync_TwoTrees_ReturnsTwoTrees()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
 
             context.Tasks.Add(GetTaskWithDefaultUser());
             context.Tasks.Add(GetTaskWithDefaultUser());
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            var result = bl.GetTaskForestAsync(GetClaimsPrincipal()).Result;
+            var result = await bl.GetTaskForestAsync(GetClaimsPrincipal());
 
             Assert.Equal(2, result.Count);
         }
 
         [Fact]
-        public void GetTaskForestAsync_TreeWithTwoChildren_ReturnsTreeWithBothChildren()
+        public async Task GetTaskForestAsync_TreeWithTwoChildren_ReturnsTreeWithBothChildren()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
@@ -99,9 +101,9 @@ namespace Application.UnitTests
                     User = DefaultUser
                 });
 
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            var result = bl.GetTaskForestAsync(GetClaimsPrincipal()).Result[0];
+            var result = (await bl.GetTaskForestAsync(GetClaimsPrincipal()))[0];
 
             Assert.Equal(2, result.ChildrenTasks.Count);
             Assert.Equal(result, result.ChildrenTasks[0].Parent);
@@ -109,7 +111,7 @@ namespace Application.UnitTests
         }
 
         [Fact]
-        public void AddSubtaskAsync_TreeWithHeight2_AddsAndUpdatesComputableFields()
+        public async Task AddSubtaskAsync_TreeWithHeight2_AddsAndUpdatesComputableFields()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
@@ -130,9 +132,9 @@ namespace Application.UnitTests
             };
 
             context.Tasks.Add(rootTask);
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            bl.AddSubtaskAsync(new TaskEntity
+            await bl.AddSubtaskAsync(new TaskEntity
             {
                 ActualExecutionTime = 1,
                 PlannedComplexity = 1
@@ -145,7 +147,7 @@ namespace Application.UnitTests
         }
 
         [Fact]
-        public void DeleteTaskAsync_Tree_DeletesAndUpdatesComputableFields()
+        public async Task DeleteTaskAsync_Tree_DeletesAndUpdatesComputableFields()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
@@ -181,9 +183,9 @@ namespace Application.UnitTests
             };
 
             context.Tasks.Add(rootTask);
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            bl.DeleteTaskAsync(subSubTask.Id, GetClaimsPrincipal());
+            await bl.DeleteTaskAsync(subSubTask.Id, GetClaimsPrincipal());
 
             Assert.Equal(0, rootTask.ActualExecutionTime);
             Assert.Equal(0, subtask.ActualExecutionTime);
@@ -192,7 +194,7 @@ namespace Application.UnitTests
         }
 
         [Fact]
-        public void UpdateTaskAsync_ValidTree_UpdatesStatues()
+        public async Task UpdateTaskAsync_ValidTree_UpdatesStatues()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
@@ -215,9 +217,9 @@ namespace Application.UnitTests
             };
 
             context.Tasks.Add(rootTask);
-            context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            bl.UpdateTaskAsync(new TaskEntity { Id = rootTask.Id, Status = TaskStatus.Completed },
+            await bl.UpdateTaskAsync(new TaskEntity { Id = rootTask.Id, Status = TaskStatus.Completed },
                 GetClaimsPrincipal());
 
             Assert.Equal(TaskStatus.Completed, rootTask.Status);
@@ -225,7 +227,7 @@ namespace Application.UnitTests
         }
 
         [Fact]
-        public async void UpdateTaskAsync_StatusCompleted_ThrowsTaskInvalidStatusException()
+        public async Task UpdateTaskAsync_StatusCompleted_ThrowsTaskInvalidStatusException()
         {
             var context = GetDbContext();
             var bl = GetBL(context);
@@ -257,7 +259,7 @@ namespace Application.UnitTests
         }
 
         [Fact]
-        public async void UpdateTaskAsync_StatusPaused_ThrowsTaskInvalidStatusException()
+        public async Task UpdateTaskAsync_StatusPaused_ThrowsTaskInvalidStatusException()
         {
             var context = GetDbContext();
             var bl = GetBL(context);

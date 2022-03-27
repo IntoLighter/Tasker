@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Application;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models.VMs;
@@ -9,9 +9,9 @@ namespace Web.Controllers
     [AllowAnonymous]
     public class AuthenticationController : Controller
     {
-        private readonly AuthenticationBL _authenticationBL;
+        private readonly IAuthenticationBL _authenticationBL;
 
-        public AuthenticationController(AuthenticationBL authenticationBL)
+        public AuthenticationController(IAuthenticationBL authenticationBL)
         {
             _authenticationBL = authenticationBL;
         }
@@ -35,7 +35,7 @@ namespace Web.Controllers
         public async Task<IActionResult> LogIn([Bind("Email", "Password")] AuthenticationVM vm)
         {
             if (!ModelState.IsValid) return View("Index", vm);
-            await _authenticationBL.LoginAsync(vm.Email, vm.Password, User);
+            await _authenticationBL.LogInAsync(vm.Email, vm.Password, User);
             return RedirectToAction("Index", "Home");
         }
 
