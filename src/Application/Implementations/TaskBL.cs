@@ -7,6 +7,7 @@ using Application.Common;
 using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Entities;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TaskStatus = Domain.Enums.TaskStatus;

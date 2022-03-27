@@ -6,6 +6,7 @@ using Application.Common;
 using Application.Exceptions;
 using Application.Implementations;
 using Domain.Entities;
+using Infrastructure.Persistence;
 using Infrastructure.Persistence.EntityFramework;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
