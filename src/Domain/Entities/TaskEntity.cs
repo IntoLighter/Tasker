@@ -18,6 +18,7 @@ namespace Domain.Entities
         public int ActualExecutionTime { get; set; }
         public List<TaskEntity> ChildrenTasks { get; set; } = new List<TaskEntity>();
         public TaskEntity Parent { get; set; }
+        public long? ParentId { get; set; }
         public string UserId { get; set; }
         public IdentityUser User { get; set; }
     }

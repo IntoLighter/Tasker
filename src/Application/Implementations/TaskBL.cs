@@ -25,28 +25,32 @@ namespace Application.Implementations
             _logger = logger;
         }
 
-        public Task<List<TaskEntity>> GetTaskForestAsync(ClaimsPrincipal user)
+        public async Task<List<TaskEntity>> GetTaskForestAsync(ClaimsPrincipal user)
         {
-            _logger.LogInformation(LogEvents.GetTaskForest,
-                "Getting tasks for user {UserId}", GetUserId(user));
-            return
-                Task.FromResult(_context.Tasks
-                    .Where(e => e.UserId == GetUserId(user))
-                    .Include(e => e.ChildrenTasks)
-                    .AsEnumerable()
-                    .Where(e => e.Parent == null)
-                    .ToList());
+            return await Task.Run(() =>
+            {
+                _logger.LogInformation(LogEvents.GetTaskForest,
+                    "Getting tasks for user {UserId}", GetUserId(user));
+                return
+                    _context.Tasks
+                        .Where(e => e.UserId == GetUserId(user))
+                        .AsEnumerable()
+                        .Where(e => e.Parent == null)
+                        .ToList();
+            });
         }
 
-        public Task<TaskEntity> GetTaskSubtreeAsync(long taskId, ClaimsPrincipal user)
+        public async Task<TaskEntity> GetTaskSubtreeAsync(long taskId, ClaimsPrincipal user)
         {
-            _logger.LogInformation(LogEvents.GetTaskSubtree,
-                "Getting subtree for task {Id} and user {UserId}", taskId, GetUserId(user));
-            return Task.FromResult(
-                _context.Tasks
-                    .Include(e => e.ChildrenTasks)
+            return await Task.Run(() =>
+            {
+                _logger.LogInformation(LogEvents.GetTaskSubtree,
+                    "Getting subtree for task {Id} and user {UserId}", taskId, GetUserId(user));
+                return _context.Tasks
+                    .Where(e => e.UserId == GetUserId(user))
                     .AsEnumerable()
-                    .Single(e => e.Id == taskId));
+                    .Single(e => e.Id == taskId);
+            });
         }
 
         public async Task AddTaskAsync(TaskEntity task, ClaimsPrincipal user)
@@ -133,6 +137,7 @@ namespace Application.Implementations
             originalTask.Status = updatedTask.Status;
             originalTask.DateOfRegistration = updatedTask.DateOfRegistration;
             originalTask.DateOfComplete = updatedTask.DateOfComplete;
+            
             await _context.SaveChangesAsync();
 
             _logger.LogInformation(LogEvents.UpdateTask,

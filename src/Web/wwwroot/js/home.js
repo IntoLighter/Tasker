@@ -12,7 +12,6 @@ var inputsArray = [nameInput, descriptionInput, listOfExecutorsInput,
 var taskForm = $('#task-form');
 var taskTreeFocusedElement;
 var currentErrorAlert;
-
 function showErrorAlert(errorName) {
     if (currentErrorAlert !== undefined) {
         currentErrorAlert.remove();
@@ -32,7 +31,6 @@ function showErrorAlert(errorName) {
         });
     });
 }
-
 function traverseChildren(node, callback) {
     var queue = [];
     queue.push(node);
@@ -44,7 +42,6 @@ function traverseChildren(node, callback) {
         });
     }
 }
-
 $('.task-node-name').on('click', function (event) {
     event.stopPropagation();
     if (taskTreeFocusedElement !== undefined) {
@@ -68,9 +65,9 @@ $('.task-node-name').on('click', function (event) {
         traverseChildren(resp, function (node) {
             taskTreeFocusedElement.parent().find("[task-id=".concat(node.id, "]"))
                 .append($('<span>', {
-                    'text': "(".concat(node.actualExecutionTime, ")"),
-                    'class': 'text-light task-node-execution-time'
-                }));
+                'text': "(".concat(node.actualExecutionTime, ")"),
+                'class': 'text-light task-node-execution-time'
+            }));
         });
     });
 });
